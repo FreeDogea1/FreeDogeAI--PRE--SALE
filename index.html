@@ -1,38 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Free Doge AI Presale</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>FreeDogeAI - Yapay Zekâ</title>
+  <style>
+    body {
+      background-color: #0e0e0e;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #chat-box {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+    }
+    #user-input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    #send-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #00d09c;
+      color: black;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    #gpt-reply {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <p>Token Presale – Invest Early!</p>
-    <button id="connectWallet">Connect Wallet</button>
-  </header>
+  <div id="chat-box">
+    <h2>🤖 FreeDogeAI Yapay Zekâ</h2>
+    <p>Merhaba! Ben FDAI'nın yapay zekâ destekli asistanıyım. Token hakkında her şeyi sorabilirsin.</p>
+    <input type="text" id="user-input" placeholder="Sorunu buraya yaz..." />
+    <button id="send-btn" onclick="handleUserMessage()">Gönder</button>
+    <div id="gpt-reply"></div>
+  </div>
 
-  <section class="info">
-    <h2>Token Information</h2>
-    <ul>
-      <li><strong>Symbol:</strong> FDAI</li>
-      <li><strong>Supply:</strong> 2 Quadrillion</li>
-      <li><strong>Presale:</strong> 25%</li>
-      <li><strong>Network:</strong> BNB Smart Chain (BEP-20)</li>
-    </ul>
-  </section>
+  <script>
+    async function sendToGPT(userInput) {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer YOUR_API_KEY_HERE", // ← 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
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: "Sen FreeDogeAI (FDAI) isimli bir tokenın yapay zekâ asistanısın. Kullanıcılara bu token ile ilgili bilgi ver, roadmap, whitepaper, satın alma süreci gibi konularda yardımcı ol. Kısa, net ve espirili konuş."
+            },
+            {
+              role: "user",
+              content: userInput
+            }
+          ]
+        })
+      });
 
-  <section class="buy">
-    <h2>Buy Tokens</h2>
-    <p>1 BNB = 12,500,000 FDAI</p>
-    <button id="buyNow">Buy Now</button>
-    <p class="warning">Minimum 0.035 BNB</p>
-  </section>
+      const data = await response.json();
+      const reply = data.choices?.[0]?.message?.content || "Cevap alınamadı.";
+      document.getElementById("gpt-reply").innerText = reply;
+    }
 
-  <footer>
-    <p>© 2025 Free Doge AI. All rights reserved.</p>
-  </footer>
-
-  <script src="script.js"></script>
+    function handleUserMessage() {
+      const input = document.getElementById("user-input").value;
+      if (input.trim() === "") return;
+      sendToGPT(input);
+    }
+  </script>
 </body>
 </html>
